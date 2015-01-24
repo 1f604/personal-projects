@@ -949,6 +949,7 @@ winflag = False
 def main(userinput):
     global time1, day, days, year ,tasks,concepts,willpower,skill,constitution,luck,hasflag,winflag,lose_flag
     add_to_list("You entered: " + userinput)
+    add_to_list("==============================================================================================")
     if (constitution[0] == 0 ):
         add_to_list("You died")
         add_to_list("Press enter to exit")
