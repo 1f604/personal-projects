@@ -1,4 +1,5 @@
 #Created on 4th of November 2014
+#runs on python 2.7
 import hashlib
 import string
 import random
