@@ -2,6 +2,7 @@
 #Nullable fix from Practical Earley Parsing by Aycock & Horspool
 #edit tokens and grammar to change the tokens being parsed and the grammar used
 #Created on 18 September 2014
+#inspiration from udacity CS262
 import itertools
 from nltk.tree import *
 from nltk.draw import tree
