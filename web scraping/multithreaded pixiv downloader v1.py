@@ -31,26 +31,11 @@ httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 def ceildiv(a, b):
     return -(-a / b)
 
-# def numpages_old(address,p=1): #this is the old version. takes the base address and the page number as arguments, then visits the url made by appending the page number to the base address, keeps visiting the highest numbered page until gets to highest numbered page, time complexity is linear so this is obviously slow for galleries with 30+ pages requiring 6+ requests. For such galleries, the new numpages is at least twice as fast (9s vs 24s).
-#     #try:
-#         global urls
-#         s = fetch(address+str(p))
-#         nums = re.findall(r'&amp;type=[a-z]*&amp;p=([0-9]*)', s)
-#         print nums
-#         if nums == []:
-#             return p
-#         mx = max(map(int, nums))
-#         if mx <= p: #if we have reached the last page
-#             return p
-#         else: #If the highest page number on the page is higher than our current page number, go to that page and repeat
-#             return numpages(address,mx)
-
 def numpages(address,p=1): #this is the new version. runs in constant time. takes the base address and the page number as arguments, then visits the url made by appending the page number to the base address, then looks at the "results" field in the html (so requires server cooperation) and divides by the number of images per page which it calculates by looking at the html again (assumes constant number of images per page which is reasonable)
         s = fetch(address+str(p))
         results = re.findall(r'<span class="count-badge">([0-9]*) results', s)
         sectionurls = re.findall(r'<a.*?href="([^"]*/member_illust.php\?mode=medium\&amp;illust_id=[0-9]*)"', s)
         nums = re.findall(r'&amp;type=[a-z]*&amp;p=([0-9]*)', s)
-        # print nums
         if nums == []: #base case: there is only 1 page: solve by returning 1, trivial.
             return p
         r = int(results[0]) #inductive step: there is more than 1 page.
@@ -61,23 +46,17 @@ def geturlsfrompage(address, urls): #print isn't thread-safe until python 3, usi
     #try:
         start = time.clock()
         s = fetch(address)
-        #print s
         sectionurls = re.findall(r'<a.*?href="([^"]*/member_illust.php\?mode=medium\&amp;illust_id=[0-9]*)"', s)
         st = set(sectionurls)
-        #print st
         urls.extend(["http://www.pixiv.net"+url.replace("&amp;", "&") for url in st]) #because the links are relative URLs
-        #print urls
         elapsed = (time.clock() - start)
-        #print elapsed
 
 
 def downloadi(url): #illustration
         s = fetch(url)
         imageurl = re.findall(r'data-src="(http://[^"]*)" class="original-image"', s)
-        # print imageurl
         filename = os.path.basename(imageurl[0]).rsplit('?',1)[0] #windows can't create files with question marks in their names nd sometimes pixiv gives us these URLs
         aa = fetch(imageurl[0])
-        # print filename
         FILE = open(filename, "wb")
         FILE.write(aa)
         FILE.close()
@@ -85,10 +64,8 @@ def downloadi(url): #illustration
 
 
 def downloadm(url): #manga
-        # print "manga started"
         s = fetch(url.replace("medium", "manga"))
         murls = re.findall(r'data-src="(http://[^"]*)"', s)
-        # print murls
         folder = os.path.basename(murls[0])[:-7]
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -99,14 +76,11 @@ def downloadm(url): #manga
             threads.append(t)
         for p in threads:
             p.join()
-        # print "all threads joined"
         return
 
 def downloadmi(url, folder): #manga images
         filename = os.path.basename(url).rsplit('?',1)[0]
-        # print "started fetching " + filename
         aa = fetch(url)
-        # print "finished fetching " + filename
         FILE = open(folder+"/"+filename, "wb")
         FILE.write(aa)
         FILE.close()
@@ -114,13 +88,10 @@ def downloadmi(url, folder): #manga images
 
 def downloadu(url): #ugoira
         s = fetch(url)
-        # print s
         imageurl = re.findall(r'"src":"([^"]*ugoira1920x1080.zip)"', s)
         imageurl[0] = urllib.unquote(imageurl[0]).replace("\\", "")
-        # print imageurl
         filename = os.path.basename(imageurl[0]).rsplit('?',1)[0]
         aa = fetch(imageurl[0], 20.0) #increase  the value here if downloading particularly large zip files
-        # print filename
         FILE = open(filename, "wb")
         FILE.write(aa)
         FILE.close()
@@ -129,14 +100,10 @@ def downloadu(url): #ugoira
 
 def fetch(url, tout = 20.0):  #no need to declare opener global since we are not going to modify it, may need to increase timeouts for larger files. Longer timeout = fewer restarts = fewer requests = nicer on the server.
     req= urllib2.Request(url)
-    # print "trying to open"
     try:
         with contextlib.closing(opener.open(req, timeout=tout)) as conn: #the timeout is pretty important, without it threads will hang forever, files will not be downloaded and the program will never terminate
-            # print "opened trying to read"
             s = conn.read()
-            # print "finished reading trying to close"
             conn.close()
-            # print "closed"
             return s
     except timeout:
         print "timed out trying to fetch " + url + ", trying again"
@@ -183,10 +150,6 @@ elapsed = (time.clock() - start)
 print "time taken to get number of pages:"
 print elapsed
 
-# print numillusts
-# print nummangas
-# print numugoiras
-
 start = time.clock()
 threads = [] #start threads that go to each illustration, manga and animation page and grab all the links from each page into their respective deques
 for i in range(1,numillusts+1):
@@ -208,12 +171,6 @@ print "finished gathering URLs"
 elapsed = (time.clock() - start)
 print "time taken to get URLS:"
 print elapsed
-# print idowns
-# print len(idowns)
-# print mdowns
-# print len(mdowns)
-# print udowns
-# print len(udowns)
 if len(idowns) != len(set(idowns)): #sanity checks
     sys.exit("urls list contains duplicate")
 if len(mdowns) != len(set(mdowns)):
@@ -226,7 +183,6 @@ if len(udowns) != len(set(udowns)):
 
 
 start = time.clock()
-#print fetch(urls[1])
 threads = []
 for url in idowns:
     t = Thread(target=downloadi, args=(url,))
@@ -250,6 +206,3 @@ print "time taken to download all URLs:"
 print elapsed
 
 raw_input("All done.")
-# print urls
-# print len(urls)
-# print len(set(urls))
