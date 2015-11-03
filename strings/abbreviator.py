@@ -6,11 +6,12 @@
 #Rough sketch of future O(n^2) algorithm:
 #1. Get longest repeated substring by constructing (O(n) if using Ukkonen's) and searching through a suffix tree - worst case O(n).
 #2. Run searchandreplace on the resulting substring to abbreviate it out. Complexity for searchandreplace should be O(n) if using Boyer-Moore with Galil rule. Steps 1+2 together is O(n).
+#2. Actually the searchandreplace step can be merged into #1 since we can just do the search on the suffix tree itself. This results in a lower time complexity for this step but since we have to rebuild the suffix tree after every modification to the string, the time complexity is unchanged.
 #3. Repeat step 1-2 until there are no repeated substrings. Time-complexity: O(n*r) where r is the number of longest repeated substrings (each after previous one has been deleted from text). Worst case O(n^2)
 #
 #Alternative algorithm sketch (not sure if possible or faster):
-#1. Same as above but instead of completely reconstructing the suffix tree after each deletion, simply modify the suffix tree to fit the new string
-#2. Same as above but instead of deleting after each LRP is found, keep them in memory and then delete/replace them all at once once all have been found
+#1. Same as above but instead of rebuilding the suffix tree after each deletion, simply modify the suffix tree to fit the new string
+#2. Same as above but instead of rebuilding the suffix tree after each deletion, simply keep a list of indices to avoid so that the next search will not visit those nodes that are already deleted. Then delete/replace all the LRPs to be deleted at once once all have been found.
 #
 #Another alternative O(n^2) or worse algorithm (not sure if possible):
 #1. Again, construct suffix tree in O(n)
