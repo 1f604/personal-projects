@@ -4,6 +4,7 @@
 #This is the naive version - extremely slow for any realistic input - takes ages to process more than a few thousand words
 #Likely worse than O(n^3) performance
 #Does not handle the case where a phrase ends with a punctuation like a comma or full stop.
+#In future versions, implement option to specify min number of repeats to abbreviate
 #Rough sketch of future O(n^2) algorithm:
 #1. Get longest repeated substring by constructing (O(n) if using Ukkonen's) and searching through a suffix tree - worst case O(n).
 #2. Run searchandreplace on the resulting substring to abbreviate it out. Complexity for searchandreplace should be O(n) if using Boyer-Moore with Galil rule. Steps 1+2 together is O(n).
