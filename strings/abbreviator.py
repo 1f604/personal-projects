@@ -518,10 +518,10 @@ def searchandreplace(phrase, abbreviation, src): #This is O(n*m*number of times 
 def iterate(inputString):
     src = inputString.split()
     abbreviations = {}
-    for sequenceLength in range(min(LONGEST_ABBREV,len(src)/2),SHORTEST_ABBREV-1,-1): #this loop runs O(n) times
-        out = printRepeatingPhrases(src, sequenceLength) #this function runs in O(n), so already this algorithm is O(n^2)
+    for sequenceLength in range(min(LONGEST_ABBREV,len(src)/2),SHORTEST_ABBREV-1,-1): 
+        out = printRepeatingPhrases(src, sequenceLength) 
         if (out):
-            for phrase in out: #this loop runs at most n times therefore is at least O(n^2).
+            for phrase in out: 
                 brk = False
                 phrase.append(0)
                 while(abbreviate(phrase) in abbreviations): #simply check if phrase is already in dictionary
@@ -534,9 +534,9 @@ def iterate(inputString):
                 abbreviations[abb]=phrase
                 start = datetime.now()
                 if phrase[-1] == 0:
-                    searchandreplace(phrase,abb[0:-1],src) #O(n*length of phrase*number of times phrase appears in the text)
+                    searchandreplace(phrase,abb[0:-1],src) 
                 else:
-                    searchandreplace(phrase,abb,src) #O(n*length of phrase*number of times phrase appears in the text)
+                    searchandreplace(phrase,abb,src) 
     print "key :"
     for key in abbreviations:
         if abbreviations[key][-1] == 0:
