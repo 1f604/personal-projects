@@ -1,5 +1,4 @@
 #pixiv downloader finished on 21st 07/2015
-#NO EXTERNAL MODULES REQUIRED! :DDDDDD
 #basic outline of what this program does:
 # 1. Find out how many pages there are : numpages(url)
 # 2. Get medium links ON each page (at the time of this writing each "gallery" page has 20 medium links, but this is not relevant as my functions will automatically calculate the number each time) : geturlsfrompage(url)
