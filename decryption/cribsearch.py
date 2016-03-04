@@ -1,4 +1,6 @@
 #Use this tool to solve multi-time pads
+#Written on 4th march 2016
+#Took me a good 30 minutes
 #How this tool works:
 #Suppose you guess a crib " the "
 #We have n messages each of length k
